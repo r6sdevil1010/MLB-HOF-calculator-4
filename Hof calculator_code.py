@@ -33,17 +33,19 @@ def get_player_stats(name):
     lookup = playerid_lookup(last, first)
     if lookup.empty:
         return None
-    key_mlbam = lookup.iloc[0]['key_mlbam']
     try:
         debut = int(lookup.iloc[0]['mlb_played_first'])
         final = int(lookup.iloc[0]['mlb_played_last'])
     except:
         debut, final = 2000, 2020  # fallback
-    stats = batting_stats(debut, final, player_id=key_mlbam)
+
+    # ⚾ 전체 시즌 기록 수집
+    stats_all = batting_stats(debut, final)
+    # pybaseball의 특정 버전에 따라 컬럼명(대소문자)이 다를 수 있습니다
+    stats = stats_all[stats_all['Name'].str.strip() == name.strip()]
     if stats.empty:
         return None
     war = stats['WAR'].sum() if "WAR" in stats else None
-    # HOFm, JAWS 자동 추출 불가(실제 구현 시 DB에서 매칭 가능)
     return {
         "WAR": war,
         "HOFm": None,
