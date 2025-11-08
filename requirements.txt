@@ -5,3 +5,4 @@ scikit-learn
 pybaseball
 lxml
 beautifulsoup4
+requests
